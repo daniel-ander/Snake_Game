@@ -1,18 +1,15 @@
 # Retro Snake Game
 
-This is a simple implementation of the classic Snake game using Python and Pygame. The game features a retro design with a grid-based movement system. The player controls a snake that grows longer each time it eats food. The game ends when the snake collides with the edge of the game area or with its own tail.
+This is a Python implementation of the classic Snake game using Pygame. The game features a retro design with a grid-based movement system. The player controls a snake that grows longer each time it eats food. The game ends when the snake collides with the edge of the game area or with its own tail.
 
-## Game Steps
+## Game Features
 
-1. Create the blank window and the game loop
-2. Create the different objects in the game world
-3. Move the snake
-4. Make the snake eat the food
-5. Make the snake grow longer
-6. Check for collision with the edges and the tail of the snake
-7. Add title and frame
-8. Keep the score
-9. Add sounds if you want
+1. Grid-based movement system
+2. Snake grows longer each time it eats food
+3. Game ends when the snake collides with the edge of the game area or with its own tail
+4. Score tracking
+5. Sound effects
+6. Theme changing functionality
 
 ## Classes
 
@@ -31,3 +28,9 @@ This class initiates the game and creates the snake and food objects. It also ch
 ## Running the Game
 
 The game is run in a while loop. It checks for events such as key presses and updates the game state accordingly. It also draws the game objects on the screen.
+
+## How to Run
+
+1. Install Python and Pygame
+2. Clone this repository
+3. Run `python game.py` in the terminal
