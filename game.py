@@ -16,14 +16,15 @@ import pygame
 import sys
 from pygame.math import Vector2
 import random
+from themes import themes
 
 pygame.init()
 
-title_font = pygame.font.Font(None, 60)
-score_font = pygame.font.Font(None, 40)
+
 
 GREEN = (173, 204, 96)
 DARK_GREEN = (43, 51, 24)
+BLACK = (0, 0, 0)
 
 cell_size = 30
 number_of_cells = 25
@@ -66,7 +67,7 @@ class Snake:
     def draw(self):
         for segment in self.body:
             segment_rect = (OFFSET + segment.x * cell_size, OFFSET + segment.y * cell_size, cell_size, cell_size)
-            pygame.draw.rect(screen, DARK_GREEN, segment_rect, 0,7)
+            pygame.draw.rect(screen, game.snake_color, segment_rect, 0,7)
     
     def update(self):
         # inserts a new element to the start of the list, takes first element in list and adds the (x,y) direction to it
@@ -89,6 +90,27 @@ class Game: # this class initiates the game and creates the snake and food objec
         self.food = Food(self.snake.body)
         self.state = "RUNNING"
         self.score = 0
+        self.title_font = None
+        self.score_font = None
+        self.theme_names = list(themes.keys())
+        self.current_theme_index = 0
+        self.background = None
+        self.font_color = None
+        self.snake_color = None
+        self.change_theme()
+    # this function changes the theme of the game, chaning the colors and fonts of the game
+    # it accessess themes.py to cycle through an index of theme names, setting a variable for those themes
+    def change_theme(self):
+        self.current_theme_index = (self.current_theme_index +1) % len(self.theme_names)
+        current_theme_name = self.theme_names[self.current_theme_index]
+        current_theme = themes[current_theme_name]
+        self.title_font = pygame.font.SysFont(current_theme["font"], 60)
+        self.score_font = pygame.font.SysFont(current_theme["font"], 40)
+        self.background = current_theme["background"]
+        self.font_color = current_theme["font_color"]
+        self.snake_color = current_theme["snake_color"]
+        
+                                              
 
     def draw(self):
         self.food.draw()
@@ -157,7 +179,7 @@ while True:
 
         # this impliments movement if a key is pressed down. it wont allow you to go left if youre going right, etc
         if event.type == pygame.KEYDOWN:
-            if game.state == "STOPPED":
+            if game.state == "STOPPED" and event.key != pygame.K_F8:
                 game.state = "RUNNING"
 
             if event.key == pygame.K_UP and game.snake.direction != Vector2(0,1):
@@ -169,15 +191,24 @@ while True:
             if event.key == pygame.K_RIGHT and game.snake.direction != Vector2(-1, 0):
                 game.snake.direction = Vector2(1,0)
 
+            # this will allow the user the change the theme of the game. 
+            if event.key == pygame.K_F8:
+                game.change_theme()
+            # Adds pause functionality to the game. 
+            if event.key == pygame.K_ESCAPE:
+                game.state = "STOPPED"
+
+
+
     # draws background for screen
-    screen.fill(GREEN)
-    pygame.draw.rect(screen, DARK_GREEN, (
-        OFFSET-5, OFFSET-5, cell_size*number_of_cells+10, cell_size*number_of_cells+10), 5)
+    screen.fill(game.background)
+    pygame.draw.rect(screen, BLACK, (
+        OFFSET, OFFSET, cell_size*number_of_cells+10, cell_size*number_of_cells+10), 5)
     game.draw()
-    title_surface = title_font.render("Snake Retro", True, DARK_GREEN)
+    title_surface = game.title_font.render("Snake Retro", True, game.font_color)
     # blit stands for block image transfer, it transfers the title_surface to the screen
-    score_surface = score_font.render("Score: " + str(game.score), True, DARK_GREEN)
-    screen.blit(title_surface, (OFFSET-5, 10))
+    score_surface = game.score_font.render("Score: " + str(game.score), True, game.font_color)
+    screen.blit(title_surface, (OFFSET-5, -10))
     screen.blit(score_surface, (OFFSET-5, OFFSET + cell_size * number_of_cells +10))
     pygame.display.update()
     clock.tick(60)
